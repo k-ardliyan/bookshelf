@@ -50,31 +50,24 @@
                                 </div>
                             </div>
                         </div>
+                        <!-- Rak Buku -->
                         <div class="row g-3" id="bookList">
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                            <div class="book-item col-12 col-sm-6 col-md-4 col-lg-3" data-book-id="">
                                 <div class="card">
                                     <div class="card-body shadow">
-                                        <button type="button" class="btn-close float-end" aria-label="Close"></button>
+                                        <div class="dropdown float-end">
+                                            <button type="button" class="btn p-0 border-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path></svg>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end text-end">
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editModal">Ubah Buku</a></li>
+                                                <li><a class="dropdown-item text-danger" href="#">Hapus Buku</a></li>
+                                            </ul>
+                                        </div>
                                         <div class="form-check form-switch d-flex mb-2">
                                             <input class="form-check-input" type="checkbox" role="switch"
                                                 id="isComplete">
                                             <label class="badge bg-warning ms-2 rounded-4" for="isComplete">Belum
-                                                Dibaca</label>
-                                        </div>
-                                        <h4>Laskar Pelangi</h4>
-                                        <p class="mb-0">Penulis: Andrea Hirate</p>
-                                        <p class="mb-0">Tahun: 2012</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-12 col-sm-6 col-md-4 col-lg-3">
-                                <div class="card">
-                                    <div class="card-body shadow">
-                                        <button type="button" class="btn-close float-end" aria-label="Close"></button>
-                                        <div class="form-check form-switch d-flex mb-2">
-                                            <input class="form-check-input" type="checkbox" role="switch"
-                                                id="isComplete" checked>
-                                            <label class="badge bg-success ms-2 rounded-4" for="isComplete">Selesai
                                                 Dibaca</label>
                                         </div>
                                         <h4>Laskar Pelangi</h4>
@@ -122,7 +115,46 @@
                                 Buku Selesai Dibaca
                             </label>
                         </div>
-                        <button type="submit" id="bookSubmit" class="btn btn-primary w-100 mt-3">Simpan</button>
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Simpan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal Edit Book -->
+    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="editModalLabel">Ubah Buku</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editBook">
+                        <input type="hidden" id="editBookId">
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="editBookTitle" placeholder="Nama Buku"
+                                required>
+                            <label for="editBookTitle">Judul</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="text" class="form-control" id="editBookAuthor" placeholder="Nama Penulis"
+                                required>
+                            <label for="editBookAuthor">Penulis</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input type="number" class="form-control" id="editBookYear" placeholder="Tahun Buku Keluar"
+                                required>
+                            <label for="editBookYear">Tahun</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="editBookIsComplete">
+                            <label class="form-check-label" for="editBookIsComplete">
+                                Buku Selesai Dibaca
+                            </label>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100 mt-3">Simpan</button>
                     </form>
                 </div>
             </div>
@@ -130,96 +162,141 @@
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
-        (() => {
-            let bookList = [];
+        let books = [];
 
-            // store book from form
-            function storeBook(e) {
-                e.preventDefault();
-                const title = document.querySelector('#inputBookTitle'),
-                    author = document.querySelector('#inputBookAuthor'),
-                    year = document.querySelector('#inputBookYear'),
-                    isComplete = document.querySelector('#inputBookIsComplete'),
-                    book = {
-                        id: +new Date(),
-                        title: title.value,
-                        author: author.value,
-                        year: year.value,
-                        isComplete: isComplete.checked
-                    };
-                bookList.push(book);
-                document.dispatchEvent(new Event('bookChanged'));
-                console.log(bookList);
-            }
+        function addBook(e) {
+            e.preventDefault();
+            const title = document.getElementById('inputBookTitle'),
+                author = document.getElementById('inputBookAuthor'),
+                year = document.getElementById('inputBookYear'),
+                isComplete = document.getElementById('inputBookIsComplete'),
+                book = {
+                    id: +new Date(),
+                    title: title.value,
+                    author: author.value,
+                    year: parseInt(year.value),
+                    isComplete: isComplete.checked
+                };
+            books.push(book);
+            [title.value, author.value, year.value, isComplete.checked] = ['','','',false];
+            document.dispatchEvent(new Event('bookChanged'));
+            console.log(books);
+        }
 
-            // filter book
-            function filterBook(filter) {
-                let filteredBook = bookList.filter(book => {
-                    return book.isComplete === filter;
-                });
-                document.dispatchEvent(new Event('bookChanged'));
-            }
-
-            // serch book
-            function searchBook(search) {
-                let filteredBook = bookList.filter(book => {
-                    return book.title.toLowerCase().includes(search.toLowerCase());
-                });
-                document.dispatchEvent(new Event('bookChanged'));
-            }
-
-            // show book list
-            function showBookList(bookList) {
-                let bookListElement = document.getElementById('bookList');
-                bookListElement.innerHTML = '';
-                bookList.forEach(book => {
-                    let bookElement = document.createElement('div');
-                    bookElement.className = 'col-12 col-sm-6 col-md-4 col-lg-3';
-                    bookElement.innerHTML = `
+        function renderBooks(e) {
+            const bookList = document.getElementById('bookList');
+            bookList.innerHTML = '';
+            books.forEach(book => {
+                const bookItem = document.createElement('div');
+                bookItem.className = 'book-item col-12 col-sm-6 col-md-4 col-lg-3';
+                bookItem.setAttribute('data-book-id', book.id);
+                bookItem.innerHTML = `
                     <div class="card">
                         <div class="card-body shadow">
-                            <button type="button" class="btn-close float-end" aria-label="Close"></button>
+                            <div class="dropdown float-end">
+                                <button type="button" class="btn p-0 border-0" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path></svg>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-end text-end">
+                                    <li><a class="edit-book dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editModal">Ubah Buku</a></li>
+                                    <li><a class="delete-book dropdown-item text-danger" href="#">Hapus Buku</a></li>
+                                </ul>
+                            </div>
                             <div class="form-check form-switch d-flex mb-2">
-                                <input class="form-check-input" type="checkbox" role="switch" id="isComplete" ${book.isComplete ? 'checked' : ''}>
-                                <label class="badge bg-${book.isComplete ? 'success' : 'warning'} ms-2 rounded-4" for="isComplete">${book.isComplete ? 'Selesai Dibaca' : 'Belum Dibaca'}</label>
+                                <input class="form-check-input" type="checkbox" role="switch" id="isComplete" ${book.isComplete ? "checked" : ""}>
+                                <label class="badge ms-2 rounded-4 ${book.isComplete ? "bg-success" : "bg-warning"}" for="isComplete">${book.isComplete ? "Sudah Dibaca" : "Belum Dibaca"}</label>
                             </div>
                             <h4>${book.title}</h4>
                             <p class="mb-0">Penulis: ${book.author}</p>
                             <p class="mb-0">Tahun: ${book.year}</p>
                         </div>
                     </div>
-                    `;
-                    bookListElement.appendChild(bookElement);
-                });
-            }
+                `;
+                bookList.appendChild(bookItem);
+            });
+        }
 
-            // function local storage
-            function storeLocalStorage() {
-                ! function (bookList) {
-                    localStorage.setItem('bookList', JSON.stringify(bookList));
-                }(bookList), showBookList(bookList);
-            }
+        function editBook(e) {
+            e.preventDefault();
+            const id = e.target.closest('.book-item').getAttribute('data-book-id'),
+                bookId = document.getElementById('editBookId'),
+                title = document.getElementById('editBookTitle'),
+                author = document.getElementById('editBookAuthor'),
+                year = document.getElementById('editBookYear'),
+                isComplete = document.getElementById('editBookIsComplete'),
+                book = books.find(book => book.id === parseInt(id));
+            [bookId.value, title.value, author.value, year.value, isComplete.checked] = [book.id, book.title, book.author, book.year, book.isComplete];
+            console.log(books);
+        }
 
-            window.addEventListener('load', (function () {
-                bookList = JSON.parse(localStorage.getItem('bookList'));
-                const inputBook = document.querySelector('#inputBook'),
-                    searchBook = document.querySelector('#searchBook'),
-                    filterBook = document.querySelector('#filterBook');
+        function updateBook(e) {
+            e.preventDefault();
+            const id = document.getElementById('editBookId'),
+                title = document.getElementById('editBookTitle'),
+                author = document.getElementById('editBookAuthor'),
+                year = document.getElementById('editBookYear'),
+                isComplete = document.getElementById('editBookIsComplete');
+            books.map(book => {
+                if (book.id === parseInt(id.value)) {
+                    book.title = title.value;
+                    book.author = author.value;
+                    book.year = parseInt(year.value);
+                    book.isComplete = isComplete.checked;
+                }
+            });
+            document.dispatchEvent(new Event('bookChanged'));
+            console.log(books);
+        }
 
-                // add book
-                inputBook.addEventListener('submit', storeBook);
-                // search book
-                searchBook.addEventListener('keyup', (e) => {
-                        searchBook(e.target.value);
-                    }),
-                    // filter book
-                    filterBook.addEventListener('change', (e) => {
-                        filterBook(e.target.checked);
-                    }),
-                    // show book list
-                    document.addEventListener('bookChanged', storeLocalStorage);
-            }));
-        })();
+        function deleteBook(e) {
+            e.preventDefault();
+            const id = e.target.closest('.book-item').getAttribute('data-book-id'),
+                book = books.find(book => book.id === parseInt(id));
+            books.splice(books.indexOf(book), 1);
+            document.dispatchEvent(new Event('bookChanged'));
+            console.log(books);
+        }
+
+        function toggleBook(e) {
+            e.preventDefault();
+            const id = e.target.closest('.book-item').getAttribute('data-book-id'),
+                book = books.find(book => book.id === parseInt(id));
+            book.isComplete = !book.isComplete;
+            document.dispatchEvent(new Event('bookChanged'));
+            console.log(books);
+        }
+
+        function filterBook(e){
+            e.preventDefault();
+            const filter = document.getElementById('filterBook').value;
+            const filteredBooks = books.filter(book => {
+                if (book.isComplete.toString() === filter) {
+                    return true;
+                } else if (filter === '') {
+                    return true;
+                } else {
+                    return false;
+                }
+            });
+            document.dispatchEvent(new Event('bookChanged'));
+            console.log(filteredBooks);
+        }
+
+        window.addEventListener('load', function() {
+            document.getElementById('inputBook').addEventListener('submit', addBook);
+            document.getElementById('editBook').addEventListener('submit', updateBook);
+            document.getElementById('bookList').addEventListener('click', function(e) {
+                if (e.target.classList.contains('edit-book')) {
+                    editBook(e);
+                } else if (e.target.classList.contains('delete-book')) {
+                    deleteBook(e);
+                } else if (e.target.classList.contains('form-check-input')) {
+                    toggleBook(e);
+                }
+            });
+            document.getElementById('filterBook').addEventListener('change', filterBook);
+            document.addEventListener('bookChanged', renderBooks);
+        });
     </script>
 </body>
 

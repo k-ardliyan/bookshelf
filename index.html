@@ -56,11 +56,18 @@
                                 <div class="card">
                                     <div class="card-body shadow">
                                         <div class="dropdown float-end">
-                                            <button type="button" class="btn p-0 border-0" data-bs-toggle="dropdown" aria-expanded="false">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" style="fill: rgba(0, 0, 0, 1);"><path d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z"></path></svg>
+                                            <button type="button" class="btn p-0 border-0" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    style="fill: rgba(0, 0, 0, 1);">
+                                                    <path
+                                                        d="M12 10c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0-6c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2zm0 12c-1.1 0-2 .9-2 2s.9 2 2 2 2-.9 2-2-.9-2-2-2z">
+                                                    </path>
+                                                </svg>
                                             </button>
                                             <ul class="dropdown-menu dropdown-menu-end text-end">
-                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal" data-bs-target="#editModal">Ubah Buku</a></li>
+                                                <li><a class="dropdown-item" href="#" data-bs-toggle="modal"
+                                                        data-bs-target="#editModal">Ubah Buku</a></li>
                                                 <li><a class="dropdown-item text-danger" href="#">Hapus Buku</a></li>
                                             </ul>
                                         </div>
@@ -134,8 +141,7 @@
                     <form id="editBook">
                         <input type="hidden" id="editBookId">
                         <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="editBookTitle" placeholder="Nama Buku"
-                                required>
+                            <input type="text" class="form-control" id="editBookTitle" placeholder="Nama Buku" required>
                             <label for="editBookTitle">Judul</label>
                         </div>
                         <div class="form-floating mb-3">
@@ -178,7 +184,7 @@
                     isComplete: isComplete.checked
                 };
             books.push(book);
-            [title.value, author.value, year.value, isComplete.checked] = ['','','',false];
+            [title.value, author.value, year.value, isComplete.checked] = ['', '', '', false];
             document.dispatchEvent(new Event('bookChanged'));
             console.log(books);
         }
@@ -186,7 +192,7 @@
         function renderBooks(e) {
             const bookList = document.getElementById('bookList');
             bookList.innerHTML = '';
-            books.forEach(book => {
+            e.forEach(book => {
                 const bookItem = document.createElement('div');
                 bookItem.className = 'book-item col-12 col-sm-6 col-md-4 col-lg-3';
                 bookItem.setAttribute('data-book-id', book.id);
@@ -213,6 +219,7 @@
                     </div>
                 `;
                 bookList.appendChild(bookItem);
+
             });
         }
 
@@ -225,7 +232,9 @@
                 year = document.getElementById('editBookYear'),
                 isComplete = document.getElementById('editBookIsComplete'),
                 book = books.find(book => book.id === parseInt(id));
-            [bookId.value, title.value, author.value, year.value, isComplete.checked] = [book.id, book.title, book.author, book.year, book.isComplete];
+            [bookId.value, title.value, author.value, year.value, isComplete.checked] = [book.id, book.title, book
+                .author, book.year, book.isComplete
+            ];
             console.log(books);
         }
 
@@ -266,8 +275,7 @@
             console.log(books);
         }
 
-        function filterBook(e){
-            e.preventDefault();
+        function getFilterBooks() {
             const filter = document.getElementById('filterBook').value;
             const filteredBooks = books.filter(book => {
                 if (book.isComplete.toString() === filter) {
@@ -278,14 +286,19 @@
                     return false;
                 }
             });
-            document.dispatchEvent(new Event('bookChanged'));
             console.log(filteredBooks);
+            return filteredBooks;
         }
 
-        window.addEventListener('load', function() {
+        function filterBooks(e) {
+            const filteredBooks = getFilterBooks();
+            renderBooks(filteredBooks);
+        }
+
+        window.addEventListener('load', function () {
             document.getElementById('inputBook').addEventListener('submit', addBook);
             document.getElementById('editBook').addEventListener('submit', updateBook);
-            document.getElementById('bookList').addEventListener('click', function(e) {
+            document.getElementById('bookList').addEventListener('click', function (e) {
                 if (e.target.classList.contains('edit-book')) {
                     editBook(e);
                 } else if (e.target.classList.contains('delete-book')) {
@@ -294,8 +307,8 @@
                     toggleBook(e);
                 }
             });
-            document.getElementById('filterBook').addEventListener('change', filterBook);
-            document.addEventListener('bookChanged', renderBooks);
+            document.getElementById('filterBook').addEventListener('change', getFilterBooks);
+            document.addEventListener('bookChanged', filterBooks);
         });
     </script>
 </body>

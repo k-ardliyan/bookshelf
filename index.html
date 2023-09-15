@@ -5,136 +5,145 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="description" content="Submission Belajar Membuat Front-end Web untuk Pemula">
+    <meta name="keywords" content="submission, dicoding, frontend, web, pemula, bookshelf, book, shelf">
+    <meta name="author" content="k-ardliyan">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css">
     <title>Bookshelf App by k-ardliyan</title>
 </head>
 
 <body class="bg-light">
-    <header class="text-center py-3">
-        <h2>Bookshelf</h2>
+    <header>
+        <h1 class="text-center py-3">Bookshelf</h1>
+        <section class="container my-3">
+            <div class="row justify-content-between">
+                <div class="col-6">
+                    <div class="row align-items-center">
+                        <div class="col-12 col-md-6 mb-3 mb-md-0">
+                            <div class="form-floating">
+                                <select class="form-select" id="filterBook">
+                                    <option value="all" selected>Single View</option>
+                                    <option value="double">Double View</option>
+                                </select>
+                                <label for="filterBook">Filter Rak Buku</label>
+                            </div>
+                        </div>
+                        <div class="col-12 col-md-6">
+                            <form class="d-flex" role="search" id="searchBook">
+                                <input id="searchBookTitle" class="form-control me-2" placeholder="Cari judul buku"
+                                    aria-label="Search">
+                                <button id="searchBookSubmit" class="btn btn-outline-success"
+                                    type="submit">Cari</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-6 col-sm-auto align-self-end text-end">
+                    <button type="button" class="btn btn-primary" id="addBookButton">
+                        Tambah Buku
+                    </button>
+                </div>
+            </div>
+        </section>
     </header>
-    <section class="container my-3">
-        <div class="row justify-content-between">
-            <div class="col-6 col-sm-auto">
-                <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addModal">
-                    Tambah Buku
-                </button>
-            </div>
-            <div class="col-6 col-sm-auto">
-                <form class="d-flex" role="search" id="searchBook">
-                    <input id="searchBookTitle" class="form-control me-2" type="search" placeholder="Cari judul buku"
-                        aria-label="Search">
-                    <button id="searchSubmit" class="btn btn-outline-success" type="submit">Cari</button>
-                </form>
-            </div>
-        </div>
-    </section>
 
-    <section class="container">
+    <main class="container">
         <div class="row">
-            <div class="col">
-                <div class="card">
+            <div class="col-12" id="bookShelfAll" style="min-height: 315px;">
+                <div class="card border-2 border-info">
                     <div class="card-body">
                         <div class="row mb-3 align-items-center justify-content-between">
-                            <div class="col-6 col-sm-auto">
-                                <h3>Rak Buku</h3>
-                            </div>
-                            <div class="col-6 col-sm-auto">
-                                <div class="form-floating">
-                                    <select class="form-select" id="filterBook">
-                                        <option value="" selected>Semua</option>
-                                        <option value="false">Belum Dibaca</option>
-                                        <option value="true">Selesai Dibaca</option>
-                                    </select>
-                                    <label for="filterBook">Filter Buku</label>
-                                </div>
+                            <div class="col-auto">
+                                <h3>Rak Semua Buku</h3>
                             </div>
                         </div>
                         <!-- Rak Buku -->
-                        <div class="row g-3" id="bookList"></div>
+                        <div class="books row g-3" id="bookList">
+                            <i class="bi bi-book"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6 mb-5 mb-md-0" id="bookShelfUncomplete" style="min-height: 315px;">
+                <div class="card border-2 border-warning">
+                    <div class="card-body">
+                        <div class="row mb-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <h3>Rak Buku Belum Dibaca</h3>
+                            </div>
+                        </div>
+                        <!-- Rak Buku -->
+                        <div class="books row g-3" id="bookListUncomplete"></div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-lg-6" id="bookShelfComplete" style="min-height: 315px;">
+                <div class="card border-success border-2">
+                    <div class="card-body">
+                        <div class="row mb-3 align-items-center justify-content-between">
+                            <div class="col-auto">
+                                <h3>Rak Buku Selesai Dibaca</h3>
+                            </div>
+                        </div>
+                        <!-- Rak Buku -->
+                        <div class="books row g-3" id="bookListComplete"></div>
                     </div>
                 </div>
             </div>
         </div>
-    </section>
 
-    <!-- Modal Add Book -->
-    <div class="modal fade" id="addModal" tabindex="-1" aria-labelledby="addModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="addModalLabel">Masukkan Buku Baru</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="inputBook">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="inputBookTitle" placeholder="Nama Buku"
-                                required>
-                            <label for="inputBookTitle">Judul</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="inputBookAuthor" placeholder="Nama Penulis"
-                                required>
-                            <label for="inputBookAuthor">Penulis</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" id="inputBookYear" placeholder="Tahun Buku Keluar"
-                                required>
-                            <label for="inputBookYear">Tahun</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="inputBookIsComplete">
-                            <label class="form-check-label" for="inputBookIsComplete">
-                                Buku Selesai Dibaca
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-3">Simpan</button>
-                    </form>
+        <!-- Modal Form Book -->
+        <div class="modal fade" id="formModal" tabindex="-1" aria-labelledby="formModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="formModalLabel">Masukkan Buku Baru</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formInputBook">
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="inputBookTitle" placeholder="Nama Buku"
+                                    required>
+                                <label for="inputBookTitle">Judul</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="text" class="form-control" id="inputBookAuthor" placeholder="Nama Penulis"
+                                    required>
+                                <label for="inputBookAuthor">Penulis</label>
+                            </div>
+                            <div class="form-floating mb-3">
+                                <input type="number" class="form-control" id="inputBookYear"
+                                    placeholder="Tahun Buku Keluar" required>
+                                <label for="inputBookYear">Tahun</label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="inputBookIsComplete">
+                                <label class="form-check-label" for="inputBookIsComplete">
+                                    Buku Selesai Dibaca
+                                </label>
+                            </div>
+                            <button type="submit" class="btn btn-primary w-100 mt-3">Simpan</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    </main>
 
-    <!-- Modal Edit Book -->
-    <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="editModalLabel">Ubah Buku</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="editBook">
-                        <input type="hidden" id="editBookId">
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="editBookTitle" placeholder="Nama Buku" required>
-                            <label for="editBookTitle">Judul</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="text" class="form-control" id="editBookAuthor" placeholder="Nama Penulis"
-                                required>
-                            <label for="editBookAuthor">Penulis</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input type="number" class="form-control" id="editBookYear" placeholder="Tahun Buku Keluar"
-                                required>
-                            <label for="editBookYear">Tahun</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" id="editBookIsComplete">
-                            <label class="form-check-label" for="editBookIsComplete">
-                                Buku Selesai Dibaca
-                            </label>
-                        </div>
-                        <button type="submit" class="btn btn-primary w-100 mt-3">Simpan</button>
-                    </form>
-                </div>
-            </div>
+    <footer class="bg-dark bottom-100 mt-4">
+        <div class="container text-center py-3 text-white">
+            <p class="mb-0">Submission Belajar Membuat Front-end Web untuk Pemula</p>
+            <p class="mb-0">Dibuat oleh <a href="https://github.com/k-ardliyan" target="_blank">k-ardliyan</a></p>
         </div>
-    </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="main.js"></script>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>
